@@ -100,19 +100,21 @@ func isArabicNumeral(s string) bool {
 }
 
 func romanToArabic(s string) int {
-	romanNumerals := map[string]int{
-		"I":    1,
-		"II":   2,
-		"III":  3,
-		"IV":   4,
-		"V":    5,
-		"VI":   6,
-		"VII":  7,
-		"VIII": 8,
-		"IX":   9,
-		"X":    10,
+	romanNumerals := map[rune]int{'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100}
+	result := 0
+	prevValue := 0
+
+	for i := len(s) - 1; i >= 0; i-- {
+		value := romanNumerals[rune(s[i])]
+		if value < prevValue {
+			result -= value
+		} else {
+			result += value
+		}
+		prevValue = value
 	}
-	return romanNumerals[s]
+
+	return result
 }
 
 func arabicToInteger(s string) int {
@@ -131,17 +133,15 @@ func arabicToInteger(s string) int {
 	return arabicNumerals[s]
 }
 func arabicToRoman(s int) string {
-	arabicNumerals := map[int]string{
-		1:  "I",
-		2:  "II",
-		3:  "III",
-		4:  "IV",
-		5:  "V",
-		6:  "VI",
-		7:  "VII",
-		8:  "VIII",
-		9:  "IX",
-		10: "X",
+	romans := []string{"I", "IV", "V", "IX", "X", "XL", "L", "XC", "C"}
+	numbers := []int{1, 4, 5, 9, 10, 40, 50, 90, 100}
+	var result strings.Builder
+	for i := len(numbers) - 1; i >= 0; i-- {
+		for s >= numbers[i] {
+			result.WriteString(romans[i])
+			s -= numbers[i]
+		}
 	}
-	return arabicNumerals[s]
+
+	return result.String()
 }
